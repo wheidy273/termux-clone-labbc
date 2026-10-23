@@ -1,0 +1,31 @@
+name: Build Termux Clone 01
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build APK
+        run: ./gradlew assembleDebug
+        env:
+          TERMUX_PACKAGE_VARIANT: apt-android-7
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: clone01-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
